@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌟 Petualangan Sehat - Lawan Narkoba!</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap');
+
+  :root {
+    --primary: #FF6B35;
+    --secondary: #4ECDC4;
+    --accent: #FFE66D;
+    --danger: #FF4757;
+    --safe: #2ED573;
+    --purple: #A29BFE;
+    --bg: #FFF9F0;
+    --dark: #2D3436;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .stars {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 0; overflow: hidden;
+  }
+  .star {
+    position: absolute; font-size: 20px;
+    animation: floatStar 6s infinite ease-in-out;
+    opacity: 0.15;
+  }
+  @keyframes floatStar {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(180deg); }
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #FF6B35, #FF8E53);
+    padding: 16px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 4px 20px rgba(255,107,53,0.3);
+    position: relative; z-index: 10;
+  }
+  .header h1 {
+    font-family: 'Fredoka One', cursive;
+    color: white; font-size: 1.6rem;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+  }
+  .score-badge {
+    background: white; border-radius: 50px;
+    padding: 8px 18px; font-weight: 800;
+    color: var(--primary); font-size: 1rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  }
+
+  /* MAIN CONTAINER */
+  .container {
+    max-width: 900px; margin: 0 auto;
+    padding: 24px 16px; position: relative; z-index: 1;
+  }
+
+  /* CLASS SELECTOR */
+  .class-selector {
+    background: white; border-radius: 24px;
+    padding: 28px; margin-bottom: 24px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    border: 3px solid var(--accent);
+  }
+  .class-selector h2 {
+    font-family: 'Fredoka One', cursive;
+    color: var(--dark); font-size: 1.3rem; margin-bottom: 16px;
+    text-align: center;
+  }
+  .class-btns {
+    display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+  }
+  .class-btn {
+    padding: 10px 20px; border-radius: 50px;
+    border: 3px solid #ddd; background: white;
+    font-family: 'Fredoka One', cursive; font-size: 1rem;
+    cursor: pointer; transition: all 0.2s;
+    color: var(--dark);
+  }
+  .class-btn:hover { transform: scale(1.05); }
+  .class-btn.active {
+    background: var(--primary); color: white;
+    border-color: var(--primary);
+    box-shadow: 0 4px 15px rgba(255,107,53,0.4);
+  }
+
+  /* GAME SECTION */
+  .game-section {
+    background: white; border-radius: 24px;
+    padding: 28px; margin-bottom: 24px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    display: none; animation: slideIn 0.4s ease;
+  }
+  .game-section.active { display: block; }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .game-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.5rem; color: var(--dark);
+    margin-bottom: 8px; display: flex; align-items: center; gap: 10px;
+  }
+  .game-subtitle {
+    color: #666; margin-bottom: 20px; font-size: 0.95rem;
+  }
+
+  /* GAME 1 - PILIH YANG BENAR (KELAS 1-2) */
+  .choice-game { }
+  .question-box {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 20px; padding: 24px;
+    color: white; text-align: center; margin-bottom: 20px;
+    font-size: 1.2rem; font-weight: 700;
+    box-shadow: 0 8px 20px rgba(102,126,234,0.4);
+  }
+  .choices {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px; margin-bottom: 16px;
+  }
+  .choice-btn {
+    padding: 20px 16px; border-radius: 16px;
+    border: 3px solid #eee; background: #fafafa;
+    font-family: 'Nunito', sans-serif; font-size: 1rem;
+    font-weight: 700; cursor: pointer; transition: all 0.2s;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  .choice-btn .emoji { font-size: 2rem; }
+  .choice-btn:hover { transform: scale(1.03); border-color: var(--secondary); }
+  .choice-btn.correct { background: #d4edda; border-color: var(--safe); color: #155724; }
+  .choice-btn.wrong { background: #f8d7da; border-color: var(--danger); color: #721c24; }
+
+  /* GAME 2 - DRAG & SORT (KELAS 3-4) */
+  .sort-game {}
+  .sort-instruction {
+    background: #FFF3CD; border-radius: 16px; padding: 16px;
+    margin-bottom: 16px; color: #856404; font-weight: 600;
+    border-left: 5px solid var(--accent);
+  }
+  .sort-containers {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    margin-bottom: 16px;
+  }
+  .sort-zone {
+    border-radius: 16px; padding: 16px; min-height: 120px;
+    border: 3px dashed #ddd;
+  }
+  .sort-zone.safe-zone { background: #d4edda; border-color: var(--safe); }
+  .sort-zone.danger-zone { background: #f8d7da; border-color: var(--danger); }
+  .sort-zone h3 {
+    font-family: 'Fredoka One', cursive; font-size: 1rem;
+    margin-bottom: 10px;
+  }
+  .sort-zone.safe-zone h3 { color: #155724; }
+  .sort-zone.danger-zone h3 { color: #721c24; }
+  .sort-items {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-bottom: 16px;
+  }
+  .sort-item {
+    padding: 8px 14px; border-radius: 50px;
+    background: white; border: 2px solid var(--purple);
+    font-weight: 700; cursor: pointer; transition: all 0.2s;
+    font-size: 0.9rem; user-select: none;
+  }
+  .sort-item:hover { background: var(--purple); color: white; transform: scale(1.05); }
+  .sort-item.placed { opacity: 0.5; pointer-events: none; }
+  .dropped-item {
+    display: inline-block; padding: 6px 12px;
+    border-radius: 50px; font-size: 0.85rem; font-weight: 700;
+    margin: 4px;
+  }
+  .dropped-item.safe { background: var(--safe); color: white; }
+  .dropped-item.danger { background: var(--danger); color: white; }
+
+  /* GAME 3 - QUIZ & SCENARIO (KELAS 5-6) */
+  .scenario-box {
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    border-radius: 20px; padding: 20px; color: white;
+    margin-bottom: 20px; font-size: 1.05rem; font-weight: 600;
+    line-height: 1.6;
+  }
+  .scenario-choices { display: flex; flex-direction: column; gap: 10px; }
+  .scenario-btn {
+    padding: 14px 20px; border-radius: 14px;
+    border: 2px solid #ddd; background: white;
+    font-family: 'Nunito', sans-serif; font-size: 0.95rem;
+    font-weight: 600; cursor: pointer; transition: all 0.2s;
+    text-align: left; color: var(--dark);
+  }
+  .scenario-btn:hover { border-color: var(--secondary); background: #f0fdfc; }
+  .scenario-btn.correct { background: #d4edda; border-color: var(--safe); }
+  .scenario-btn.wrong { background: #f8d7da; border-color: var(--danger); }
+
+  /* FEEDBACK */
+  .feedback {
+    display: none; padding: 16px 20px; border-radius: 16px;
+    font-weight: 700; font-size: 1rem; margin-top: 16px;
+    animation: popIn 0.3s ease;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct { background: #d4edda; color: #155724; border: 2px solid var(--safe); }
+  .feedback.wrong { background: #f8d7da; color: #721c24; border: 2px solid var(--danger); }
+  @keyframes popIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  /* NEXT BTN */
+  .next-btn {
+    display: none; margin-top: 16px;
+    padding: 14px 32px; border-radius: 50px;
+    background: linear-gradient(135deg, var(--primary), #FF8E53);
+    color: white; border: none; font-family: 'Fredoka One', cursive;
+    font-size: 1.1rem; cursor: pointer; transition: all 0.2s;
+    box-shadow: 0 4px 15px rgba(255,107,53,0.4);
+  }
+  .next-btn:hover { transform: scale(1.05); }
+  .next-btn.show { display: inline-block; }
+
+  /* PROGRESS */
+  .progress-bar {
+    background: #eee; border-radius: 50px; height: 12px;
+    margin-bottom: 20px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; border-radius: 50px;
+    background: linear-gradient(90deg, var(--secondary), var(--safe));
+    transition: width 0.5s ease;
+  }
+
+  /* TIPS SECTION */
+  .tips-section {
+    background: linear-gradient(135deg, #667eea22, #764ba222);
+    border-radius: 20px; padding: 20px;
+    border: 2px solid var(--purple); margin-top: 24px;
+  }
+  .tips-section h3 {
+    font-family: 'Fredoka One', cursive; font-size: 1.2rem;
+    color: var(--dark); margin-bottom: 12px;
+  }
+  .tip-card {
+    background: white; border-radius: 14px; padding: 14px;
+    margin-bottom: 10px; display: flex; gap: 12px; align-items: flex-start;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  }
+  .tip-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+  .tip-text { font-size: 0.9rem; line-height: 1.5; color: #444; }
+  .tip-text strong { color: var(--dark); }
+
+  /* COMPLETION */
+  .completion {
+    display: none; text-align: center; padding: 30px;
+  }
+  .completion.show { display: block; animation: popIn 0.5s ease; }
+  .completion .trophy { font-size: 4rem; margin-bottom: 16px; }
+  .completion h2 {
+    font-family: 'Fredoka One', cursive; font-size: 2rem;
+    color: var(--primary); margin-bottom: 8px;
+  }
+  .completion p { color: #666; margin-bottom: 20px; font-size: 1rem; }
+  .stars-earned { font-size: 2rem; margin-bottom: 20px; }
+  .restart-btn {
+    padding: 14px 32px; border-radius: 50px;
+    background: linear-gradient(135deg, var(--secondary), #38d9d0);
+    color: white; border: none; font-family: 'Fredoka One', cursive;
+    font-size: 1.1rem; cursor: pointer;
+    box-shadow: 0 4px 15px rgba(78,205,196,0.4);
+  }
+
+  /* CONFETTI */
+  .confetti-piece {
+    position: fixed; width: 10px; height: 10px;
+    border-radius: 2px; animation: confettiFall 3s ease-in forwards;
+    pointer-events: none; z-index: 9999;
+  }
+  @keyframes confettiFall {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center; padding: 20px;
+    color: #999; font-size: 0.85rem; position: relative; z-index: 1;
+  }
+
+  @media (max-width: 600px) {
+    .choices { grid-template-columns: 1fr 1fr; }
+    .sort-containers { grid-template-columns: 1fr; }
+    .header h1 { font-size: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="header">
+  <h1>🌟 Petualangan Sehat!</h1>
+  <div class="score-badge">⭐ <span id="score">0</span> Poin</div>
+</div>
+
+<div class="container">
+
+  <!-- CLASS SELECTOR -->
+  <div class="class-selector">
+    <h2>🎒 Pilih Kelasmu!</h2>
+    <div class="class-btns">
+      <button class="class-btn" onclick="selectClass(1)">Kelas 1</button>
+      <button class="class-btn" onclick="selectClass(2)">Kelas 2</button>
+      <button class="class-btn" onclick="selectClass(3)">Kelas 3</button>
+      <button class="class-btn" onclick="selectClass(4)">Kelas 4</button>
+      <button class="class-btn" onclick="selectClass(5)">Kelas 5</button>
+      <button class="class-btn" onclick="selectClass(6)">Kelas 6</button>
+    </div>
+  </div>
+
+  <!-- GAME FOR CLASS 1-2: PILIH YANG BENAR -->
+  <div class="game-section" id="game-1-2">
+    <div class="game-title">🎮 Game: Pilih yang Benar!</div>
+    <div class="game-subtitle">Kelas 1 & 2 — Pilih gambar yang baik untuk tubuhmu!</div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-1-2" style="width:0%"></div></div>
+    <div class="question-box" id="q-1-2"></div>
+    <div class="choices" id="choices-1-2"></div>
+    <div class="feedback" id="fb-1-2"></div>
+    <button class="next-btn" id="next-1-2" onclick="nextQuestion12()">Lanjut ➡️</button>
+    <div class="completion" id="done-1-2">
+      <div class="trophy">🏆</div>
+      <h2>Hebat sekali!</h2>
+      <p>Kamu sudah tahu mana yang baik dan mana yang berbahaya!</p>
+      <div class="stars-earned">⭐⭐⭐</div>
+      <button class="restart-btn" onclick="restartGame('1-2')">Main Lagi! 🔄</button>
+    </div>
+  </div>
+
+  <!-- GAME FOR CLASS 3-4: PILAH & PILIH -->
+  <div class="game-section" id="game-3-4">
+    <div class="game-title">🎮 Game: Pilah & Pilih!</div>
+    <div class="game-subtitle">Kelas 3 & 4 — Klik item, lalu pilih: AMAN atau BAHAYA?</div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-3-4" style="width:0%"></div></div>
+    <div class="sort-instruction">
+      💡 Klik setiap kartu, lalu tekan tombol AMAN atau BAHAYA untuk mengkategorikannya!
+    </div>
+    <div id="selected-item-34" style="display:none; text-align:center; margin-bottom:12px;">
+      <span style="font-size:1.3rem; font-weight:800; color:#333;">Item dipilih: </span>
+      <span id="selected-label-34" style="font-size:1.3rem; font-weight:800; color:var(--purple);"></span>
+    </div>
+    <div style="display:flex; gap:12px; justify-content:center; margin-bottom:16px;" id="action-btns-34">
+      <button onclick="placeItem('safe')" style="padding:10px 24px; background:var(--safe); color:white; border:none; border-radius:50px; font-family:'Fredoka One',cursive; font-size:1rem; cursor:pointer; display:none;" id="btn-safe-34">✅ AMAN</button>
+      <button onclick="placeItem('danger')" style="padding:10px 24px; background:var(--danger); color:white; border:none; border-radius:50px; font-family:'Fredoka One',cursive; font-size:1rem; cursor:pointer; display:none;" id="btn-danger-34">❌ BAHAYA</button>
+    </div>
+    <div class="sort-items" id="items-3-4"></div>
+    <div class="sort-containers">
+      <div class="sort-zone safe-zone">
+        <h3>✅ AMAN untuk Tubuh</h3>
+        <div id="safe-drop-34"></div>
+      </div>
+      <div class="sort-zone danger-zone">
+        <h3>❌ BERBAHAYA</h3>
+        <div id="danger-drop-34"></div>
+      </div>
+    </div>
+    <div class="feedback" id="fb-3-4"></div>
+    <button class="next-btn" id="next-3-4" onclick="checkSort34()">Cek Jawabanku! ✅</button>
+    <div class="completion" id="done-3-4" style="display:none; text-align:center; padding:30px;">
+      <div style="font-size:4rem;">🏆</div>
+      <h2 style="font-family:'Fredoka One',cursive; font-size:2rem; color:var(--primary);">Kamu Pintar!</h2>
+      <p style="color:#666; margin-bottom:20px;">Kamu bisa membedakan yang aman dan berbahaya!</p>
+      <div style="font-size:2rem; margin-bottom:20px;">⭐⭐⭐</div>
+      <button class="restart-btn" onclick="restartGame('3-4')">Main Lagi! 🔄</button>
+    </div>
+  </div>
+
+  <!-- GAME FOR CLASS 5-6: SKENARIO -->
+  <div class="game-section" id="game-5-6">
+    <div class="game-title">🎮 Game: Pilih Sikapmu!</div>
+    <div class="game-subtitle">Kelas 5 & 6 — Baca cerita, pilih sikap yang tepat!</div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-5-6" style="width:0%"></div></div>
+    <div class="scenario-box" id="scenario-5-6"></div>
+    <div class="scenario-choices" id="choices-5-6"></div>
+    <div class="feedback" id="fb-5-6"></div>
+    <button class="next-btn" id="next-5-6" onclick="nextScenario()">Lanjut ➡️</button>
+    <div class="completion" id="done-5-6">
+      <div class="trophy">🏆</div>
+      <h2>Luar Biasa!</h2>
+      <p>Kamu sudah punya sikap yang tepat untuk menolak narkoba!</p>
+      <div class="stars-earned">⭐⭐⭐</div>
+      <button class="restart-btn" onclick="restartGame('5-6')">Main Lagi! 🔄</button>
+    </div>
+  </div>
+
+  <!-- TIPS SECTION -->
+  <div class="tips-section" id="tips-area" style="display:none;">
+    <h3>📚 Ingat Selalu!</h3>
+    <div id="tips-content"></div>
+  </div>
+
+</div>
+
+<div class="footer">🌿 Dibuat untuk Program Sosialisasi Anti-Narkoba Sekolah Dasar | BNN RI</div>
+
+<script>
+// ============ FLOATING STARS ============
+const starsEl = document.getElementById('stars');
+const starEmojis = ['⭐','🌟','💫','✨'];
+for (let i = 0; i < 15; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  s.textContent = starEmojis[Math.floor(Math.random() * starEmojis.length)];
+  s.style.left = Math.random() * 100 + '%';
+  s.style.top = Math.random() * 100 + '%';
+  s.style.animationDelay = Math.random() * 6 + 's';
+  s.style.animationDuration = (4 + Math.random() * 4) + 's';
+  starsEl.appendChild(s);
+}
+
+// ============ STATE ============
+let score = 0;
+let currentClass = null;
+let q12Index = 0;
+let s56Index = 0;
+let selected34 = null;
+
+// ============ QUESTIONS 1-2 ============
+const questions12 = [
+  {
+    q: "🌟 Mana yang BAIK untuk tubuhmu?",
+    choices: [
+      { emoji: "🍎", label: "Makan buah", correct: true },
+      { emoji: "💊", label: "Minum pil sembarangan", correct: false },
+      { emoji: "🥦", label: "Makan sayuran", correct: true },
+      { emoji: "🚬", label: "Rokok-rokokan", correct: false }
+    ],
+    feedback_correct: "✅ Bagus! Makan buah dan sayur membuat tubuh sehat dan kuat!",
+    feedback_wrong: "❌ Hati-hati! Pil sembarangan dan rokok bisa merusak tubuh kita."
+  },
+  {
+    q: "💪 Kegiatan apa yang membuat badan kita sehat?",
+    choices: [
+      { emoji: "⚽", label: "Bermain bola", correct: true },
+      { emoji: "🏃", label: "Berlari pagi", correct: true },
+      { emoji: "💉", label: "Suntik sembarangan", correct: false },
+      { emoji: "🍺", label: "Minum minuman keras", correct: false }
+    ],
+    feedback_correct: "✅ Benar! Olahraga membuat tubuh sehat dan pikiran segar!",
+    feedback_wrong: "❌ Itu berbahaya! Pilih olahraga agar tubuh kita kuat!"
+  },
+  {
+    q: "🚫 Jika ada orang asing menawarkan permen/obat, apa yang kamu lakukan?",
+    choices: [
+      { emoji: "🏃", label: "Pergi & cerita ke guru/orang tua", correct: true },
+      { emoji: "😊", label: "Terima saja", correct: false },
+      { emoji: "📢", label: "Minta tolong orang sekitar", correct: true },
+      { emoji: "🙈", label: "Diam saja", correct: false }
+    ],
+    feedback_correct: "✅ Hebat! Selalu cerita ke orang tua atau guru kalau ada yang mencurigakan!",
+    feedback_wrong: "❌ Jangan terima dari orang asing ya! Segera pergi dan cerita ke orang dewasa!"
+  },
+  {
+    q: "🎯 Siapa yang boleh memberimu obat?",
+    choices: [
+      { emoji: "👨‍⚕️", label: "Dokter", correct: true },
+      { emoji: "👨‍👩‍👧", label: "Orang tua", correct: true },
+      { emoji: "👻", label: "Orang asing", correct: false },
+      { emoji: "👦", label: "Teman yang tidak kamu kenal", correct: false }
+    ],
+    feedback_correct: "✅ Pintar! Hanya dokter dan orang tua yang boleh memberi obat untukmu!",
+    feedback_wrong: "❌ Hati-hati! Obat hanya boleh dari dokter atau orang tua kita ya!"
+  }
+];
+
+// ============ ITEMS 3-4 ============
+const items34 = [
+  { label: "🍎 Buah Segar", correct: "safe" },
+  { label: "⚽ Olahraga", correct: "safe" },
+  { label: "📚 Belajar", correct: "safe" },
+  { label: "💊 Pil Sembarangan", correct: "danger" },
+  { label: "🚬 Rokok", correct: "danger" },
+  { label: "🏊 Renang", correct: "safe" },
+  { label: "🍺 Minuman Keras", correct: "danger" },
+  { label: "🎨 Menggambar", correct: "safe" },
+  { label: "💉 Narkoba Suntik", correct: "danger" },
+  { label: "🥗 Makan Sehat", correct: "safe" }
+];
+
+const answers34 = {};
+
+// ============ SCENARIOS 5-6 ============
+const scenarios56 = [
+  {
+    scenario: "🎭 Scenario 1: Temanmu Andi berkata, 'Eh, coba deh ini! Kata kakak aku, ini bikin happy dan keren. Kalau kamu nggak mau, kamu pengecut!' Apa yang kamu lakukan?",
+    choices: [
+      { text: "A. Mencoba karena tidak mau dibilang pengecut", correct: false },
+      { text: "B. Menolak dengan tegas: 'Tidak! Itu berbahaya!' dan pergi", correct: true },
+      { text: "C. Diam saja dan ikut-ikutan", correct: false },
+      { text: "D. Menolak dan melaporkan ke guru/orang tua", correct: true }
+    ],
+    fb_correct: "✅ Keren! Berani menolak dan lapor ke orang dewasa adalah tindakan yang tepat! Kamu bukan pengecut, kamu pintar!",
+    fb_wrong: "❌ Mencoba narkoba bukan bukti keberanian. Keberanian sejati adalah menolak meskipun diejek!"
+  },
+  {
+    scenario: "📱 Scenario 2: Kamu tahu temanmu Maya sering menyendiri, matanya merah, dan nilainya turun drastis. Kamu curiga ada masalah. Apa yang kamu lakukan?",
+    choices: [
+      { text: "A. Pura-pura tidak tahu", correct: false },
+      { text: "B. Ejek Maya di depan teman-teman", correct: false },
+      { text: "C. Ajak bicara baik-baik dan temani ke guru BK/wali kelas", correct: true },
+      { text: "D. Cerita ke orang tua dan minta bantuan", correct: true }
+    ],
+    fb_correct: "✅ Teman yang baik adalah yang peduli dan membantu! Kamu luar biasa!",
+    fb_wrong: "❌ Teman yang baik tidak membiarkan temannya dalam masalah. Bantulah dengan cara yang tepat!"
+  },
+  {
+    scenario: "🔬 Scenario 3: Di pelajaran IPA, gurumu menjelaskan bahwa narkoba merusak otak. Temanmu berbisik: 'Ah, lebay, itu cuma sekali-sekali tidak apa-apa.' Apa responmu?",
+    choices: [
+      { text: "A. Setuju, narkoba sekali tidak apa-apa", correct: false },
+      { text: "B. Jelaskan bahwa narkoba tetap berbahaya meskipun sekali, karena bisa bikin kecanduan", correct: true },
+      { text: "C. Diam saja karena tidak mau ribut", correct: false },
+      { text: "D. Minta guru menjelaskan lebih lanjut", correct: true }
+    ],
+    fb_correct: "✅ Benar! Narkoba sekali pun bisa menyebabkan kecanduan. Pengetahuanmu sangat bagus!",
+    fb_wrong: "❌ Tidak ada yang 'aman' dari narkoba! Bahkan sekali mencoba bisa langsung kecanduan."
+  },
+  {
+    scenario: "🏠 Scenario 4: Kamu menemukan benda mencurigakan (seperti bubuk atau pil aneh) di dalam tas temanmu secara tidak sengaja. Apa yang kamu lakukan?",
+    choices: [
+      { text: "A. Ambil dan coba sendiri", correct: false },
+      { text: "B. Pura-pura tidak melihat", correct: false },
+      { text: "C. Langsung cerita kepada guru atau orang tua", correct: true },
+      { text: "D. Foto dan laporkan ke guru BK", correct: true }
+    ],
+    fb_correct: "✅ Tepat! Melaporkan ke orang dewasa adalah tindakan berani dan bertanggung jawab!",
+    fb_wrong: "❌ Jangan pernah menyentuh benda yang tidak dikenal! Segera lapor ke guru atau orang tua."
+  },
+  {
+    scenario: "💭 Scenario 5: Kamu sedang sedih karena nilai jelek dan dimarahi orang tua. Temanmu menawarkan sesuatu yang katanya 'bisa bikin kamu lupa sedih'. Apa sikapmu?",
+    choices: [
+      { text: "A. Menerimanya karena ingin melupakan masalah", correct: false },
+      { text: "B. Menolak dan cerita masalahmu ke orang tua atau guru", correct: true },
+      { text: "C. Menolak dan cari aktivitas positif seperti olahraga atau seni", correct: true },
+      { text: "D. Menerimanya karena kamu percaya temanmu", correct: false }
+    ],
+    fb_correct: "✅ Cara sehat mengatasi masalah adalah cerita ke orang yang dipercaya dan lakukan hal positif!",
+    fb_wrong: "❌ Narkoba tidak menyelesaikan masalah, justru menciptakan masalah baru yang lebih besar!"
+  }
+];
+
+// ============ TIPS ============
+const tips = {
+  '1-2': [
+    { icon: '🍎', text: '<strong>Makan makanan sehat</strong> seperti buah, sayur, dan nasi setiap hari agar tubuh kuat!' },
+    { icon: '🚫', text: '<strong>Jangan terima makanan atau minuman</strong> dari orang yang tidak kamu kenal!' },
+    { icon: '👨‍👩‍👧', text: '<strong>Ceritakan semuanya</strong> ke orang tua atau guru jika ada yang mencurigakan.' },
+  ],
+  '3-4': [
+    { icon: '💪', text: '<strong>Narkoba merusak otak dan tubuh.</strong> Orang yang kecanduan sulit berpikir dan belajar.' },
+    { icon: '🏆', text: '<strong>Isi waktumu dengan kegiatan positif</strong> — olahraga, seni, membaca, atau bermain!' },
+    { icon: '🚨', text: '<strong>Katakan TIDAK dengan tegas</strong> jika ada yang menawarkan sesuatu yang mencurigakan.' },
+  ],
+  '5-6': [
+    { icon: '🧠', text: '<strong>Narkoba merusak neuron otak secara permanen.</strong> Kecerdasan dan masa depanmu bisa hilang!' },
+    { icon: '⚖️', text: '<strong>Hukum Indonesia sangat tegas.</strong> Pengedar narkoba bisa dipenjara seumur hidup.' },
+    { icon: '🤝', text: '<strong>Jadilah agen perubahan.</strong> Berani melaporkan = menyelamatkan banyak nyawa!' },
+    { icon: '📞', text: '<strong>BNN Hotline: 1500 BNN (1500266)</strong> — Gratis, rahasia, dan siap membantu 24 jam.' },
+  ]
+};
+
+// ============ FUNCTIONS ============
+function selectClass(cls) {
+  document.querySelectorAll('.class-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.game-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('tips-area').style.display = 'none';
+
+  currentClass = cls;
+  let gameId, tipsKey;
+
+  if (cls <= 2) { gameId = 'game-1-2'; tipsKey = '1-2'; initGame12(); }
+  else if (cls <= 4) { gameId = 'game-3-4'; tipsKey = '3-4'; initGame34(); }
+  else { gameId = 'game-5-6'; tipsKey = '5-6'; initGame56(); }
+
+  document.getElementById(gameId).classList.add('active');
+  showTips(tipsKey);
+}
+
+function updateScore(pts) {
+  score += pts;
+  document.getElementById('score').textContent = score;
+}
+
+function showTips(key) {
+  const area = document.getElementById('tips-area');
+  const content = document.getElementById('tips-content');
+  content.innerHTML = '';
+  tips[key].forEach(t => {
+    content.innerHTML += `<div class="tip-card"><div class="tip-icon">${t.icon}</div><div class="tip-text">${t.text}</div></div>`;
+  });
+  area.style.display = 'block';
+}
+
+function confetti() {
+  const colors = ['#FF6B35','#4ECDC4','#FFE66D','#A29BFE','#FF4757','#2ED573'];
+  for (let i = 0; i < 50; i++) {
+    setTimeout(() => {
+      const c = document.createElement('div');
+      c.className = 'confetti-piece';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 3000);
+    }, i * 50);
+  }
+}
+
+// ============ GAME 1-2 ============
+function initGame12() {
+  q12Index = 0;
+  document.getElementById('done-1-2').classList.remove('show');
+  renderQuestion12();
+}
+
+function renderQuestion12() {
+  const q = questions12[q12Index];
+  document.getElementById('progress-1-2').style.width = (q12Index / questions12.length * 100) + '%';
+  document.getElementById('q-1-2').textContent = q.q;
+  document.getElementById('fb-1-2').className = 'feedback';
+  document.getElementById('next-1-2').className = 'next-btn';
+
+  const choicesEl = document.getElementById('choices-1-2');
+  choicesEl.innerHTML = '';
+  // Shuffle choices
+  const shuffled = [...q.choices].sort(() => Math.random() - 0.5);
+  shuffled.forEach((c, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.innerHTML = `<span class="emoji">${c.emoji}</span>${c.label}`;
+    btn.onclick = () => handleChoice12(c.correct, btn, q);
+    choicesEl.appendChild(btn);
+  });
+}
+
+function handleChoice12(isCorrect, btn, q) {
+  document.querySelectorAll('#choices-1-2 .choice-btn').forEach(b => b.onclick = null);
+  const fb = document.getElementById('fb-1-2');
+  if (isCorrect) {
+    btn.classList.add('correct');
+    fb.textContent = q.feedback_correct;
+    fb.className = 'feedback correct show';
+    updateScore(10);
+  } else {
+    btn.classList.add('wrong');
+    fb.textContent = q.feedback_wrong;
+    fb.className = 'feedback wrong show';
+  }
+  document.getElementById('next-1-2').className = 'next-btn show';
+}
+
+function nextQuestion12() {
+  q12Index++;
+  if (q12Index >= questions12.length) {
+    document.getElementById('done-1-2').classList.add('show');
+    document.getElementById('progress-1-2').style.width = '100%';
+    confetti();
+  } else {
+    renderQuestion12();
+  }
+}
+
+// ============ GAME 3-4 ============
+function initGame34() {
+  selected34 = null;
+  Object.keys(answers34).forEach(k => delete answers34[k]);
+  document.getElementById('done-3-4').style.display = 'none';
+  document.getElementById('fb-3-4').className = 'feedback';
+  document.getElementById('next-3-4').className = 'next-btn show';
+  document.getElementById('safe-drop-34').innerHTML = '';
+  document.getElementById('danger-drop-34').innerHTML = '';
+  document.getElementById('selected-item-34').style.display = 'none';
+  document.getElementById('btn-safe-34').style.display = 'none';
+  document.getElementById('btn-danger-34').style.display = 'none';
+
+  const itemsEl = document.getElementById('items-3-4');
+  itemsEl.innerHTML = '';
+  items34.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'sort-item';
+    div.id = 'item34-' + i;
+    div.textContent = item.label;
+    div.onclick = () => selectItem34(i, item, div);
+    itemsEl.appendChild(div);
+  });
+}
+
+function selectItem34(index, item, el) {
+  if (el.classList.contains('placed')) return;
+  // Deselect all
+  document.querySelectorAll('.sort-item').forEach(i => i.style.outline = 'none');
+  selected34 = { index, item, el };
+  el.style.outline = '3px solid var(--purple)';
+  document.getElementById('selected-item-34').style.display = 'block';
+  document.getElementById('selected-label-34').textContent = item.label;
+  document.getElementById('btn-safe-34').style.display = 'inline-block';
+  document.getElementById('btn-danger-34').style.display = 'inline-block';
+}
+
+function placeItem(zone) {
+  if (!selected34) return;
+  const { index, item, el } = selected34;
+  answers34[index] = zone;
+  el.classList.add('placed');
+  el.style.outline = 'none';
+
+  const dropped = document.createElement('span');
+  dropped.className = 'dropped-item ' + zone;
+  dropped.textContent = item.label;
+  document.getElementById(zone === 'safe' ? 'safe-drop-34' : 'danger-drop-34').appendChild(dropped);
+
+  document.getElementById('selected-item-34').style.display = 'none';
+  document.getElementById('btn-safe-34').style.display = 'none';
+  document.getElementById('btn-danger-34').style.display = 'none';
+  selected34 = null;
+
+  const progress = (Object.keys(answers34).length / items34.length * 100);
+  document.getElementById('progress-3-4').style.width = progress + '%';
+}
+
+function checkSort34() {
+  let correct = 0, total = items34.length;
+  items34.forEach((item, i) => {
+    if (answers34[i] === item.correct) correct++;
+  });
+
+  const fb = document.getElementById('fb-3-4');
+  if (Object.keys(answers34).length < total) {
+    fb.textContent = '⚠️ Belum selesai! Masih ada ' + (total - Object.keys(answers34).length) + ' item yang belum dikategorikan!';
+    fb.className = 'feedback wrong show';
+    return;
+  }
+
+  updateScore(correct * 5);
+
+  if (correct === total) {
+    fb.textContent = `🎉 Sempurna! Semua ${total} item benar! Kamu sangat pintar!`;
+    fb.className = 'feedback correct show';
+    setTimeout(() => {
+      document.getElementById('done-3-4').style.display = 'block';
+      confetti();
+    }, 1500);
+  } else {
+    fb.textContent = `✅ ${correct} dari ${total} benar. Perhatikan yang salah dan belajar lebih giat!`;
+    fb.className = 'feedback correct show';
+    setTimeout(() => {
+      document.getElementById('done-3-4').style.display = 'block';
+    }, 1500);
+  }
+  document.getElementById('next-3-4').className = 'next-btn';
+}
+
+// ============ GAME 5-6 ============
+function initGame56() {
+  s56Index = 0;
+  document.getElementById('done-5-6').classList.remove('show');
+  renderScenario();
+}
+
+function renderScenario() {
+  const s = scenarios56[s56Index];
+  document.getElementById('progress-5-6').style.width = (s56Index / scenarios56.length * 100) + '%';
+  document.getElementById('scenario-5-6').textContent = s.scenario;
+  document.getElementById('fb-5-6').className = 'feedback';
+  document.getElementById('next-5-6').className = 'next-btn';
+
+  const choicesEl = document.getElementById('choices-5-6');
+  choicesEl.innerHTML = '';
+  s.choices.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'scenario-btn';
+    btn.textContent = c.text;
+    btn.onclick = () => handleScenario(c.correct, btn, s);
+    choicesEl.appendChild(btn);
+  });
+}
+
+function handleScenario(isCorrect, btn, s) {
+  document.querySelectorAll('#choices-5-6 .scenario-btn').forEach(b => b.onclick = null);
+  const fb = document.getElementById('fb-5-6');
+  if (isCorrect) {
+    btn.classList.add('correct');
+    fb.textContent = s.fb_correct;
+    fb.className = 'feedback correct show';
+    updateScore(15);
+  } else {
+    btn.classList.add('wrong');
+    fb.textContent = s.fb_wrong;
+    fb.className = 'feedback wrong show';
+  }
+  document.getElementById('next-5-6').className = 'next-btn show';
+}
+
+function nextScenario() {
+  s56Index++;
+  if (s56Index >= scenarios56.length) {
+    document.getElementById('done-5-6').classList.add('show');
+    document.getElementById('progress-5-6').style.width = '100%';
+    confetti();
+  } else {
+    renderScenario();
+  }
+}
+
+// ============ RESTART ============
+function restartGame(type) {
+  if (type === '1-2') initGame12();
+  else if (type === '3-4') initGame34();
+  else initGame56();
+}
+</script>
+</body>
+</html>
